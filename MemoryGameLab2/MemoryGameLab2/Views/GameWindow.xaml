@@ -1,0 +1,97 @@
+<Window x:Class="MemoryGameLab2.Views.GameWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoryGameLab2.Views"
+        mc:Ignorable="d"
+        Title="Memory Game" Height="600" Width="800">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Category">
+                    <MenuItem Header="Animale" IsCheckable="True" IsChecked="True"
+                              Command="{Binding CategorySelectedCommand}" CommandParameter="Animale"/>
+                    <MenuItem Header="Fructe" IsCheckable="True"
+                              Command="{Binding CategorySelectedCommand}" CommandParameter="Fructe"/>
+                    <MenuItem Header="Obiecte" IsCheckable="True"
+                              Command="{Binding CategorySelectedCommand}" CommandParameter="Obiecte"/>
+                </MenuItem>
+                <MenuItem Header="New Game" Command="{Binding NewGameCommand}"/>
+                <MenuItem Header="Open Game" Command="{Binding OpenGameCommand}"/>
+                <MenuItem Header="Save Game" Command="{Binding SaveGameCommand}"/>
+                <MenuItem Header="Statistics" Command="{Binding StatisticsCommand}"/>
+                <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+            <MenuItem Header="Options">
+                <MenuItem Header="Standard" IsCheckable="True" IsChecked="{Binding IsStandardMode}"
+                          Command="{Binding ModeSelectedCommand}" CommandParameter="Standard"/>
+                <MenuItem Header="Custom" IsCheckable="True" IsChecked="{Binding IsStandardMode, Converter={StaticResource InverseBooleanConverter}}"
+                          Command="{Binding ModeSelectedCommand}" CommandParameter="Custom">
+                    <MenuItem.HeaderTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Custom"/>
+                                <StackPanel Margin="10,0,0,0" Visibility="{Binding DataContext.IsStandardMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Rânduri:" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding DataContext.CustomRows, RelativeSource={RelativeSource AncestorType=Window}}" Width="30"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Coloane:" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding DataContext.CustomColumns, RelativeSource={RelativeSource AncestorType=Window}}" Width="30"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </StackPanel>
+                        </DataTemplate>
+                    </MenuItem.HeaderTemplate>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Help">
+                <MenuItem Header="About" Command="{Binding ShowAboutCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="10">
+                <TextBlock Text="Timp rămas: " FontSize="16"/>
+                <TextBlock Text="{Binding TimeRemaining}" FontSize="16" FontWeight="Bold"/>
+                <TextBlock Text=" secunde" FontSize="16" Margin="5,0,0,0"/>
+            </StackPanel>
+
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding Cards}" Margin="10">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Rows="{Binding Settings.Rows}" Columns="{Binding Settings.Columns}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding DataContext.CardClickCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="{Binding}"
+                                Width="100" Height="100" Margin="5">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsFlipped}" Value="False">
+                                            <Setter Property="Background" Value="Blue"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsMatched}" Value="True">
+                                            <Setter Property="Visibility" Value="Hidden"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            <Image Source="{Binding Image}" Stretch="Uniform"/>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </DockPanel>
+</Window> 

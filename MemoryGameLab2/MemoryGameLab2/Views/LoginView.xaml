@@ -1,0 +1,89 @@
+<Window x:Class="MemoryGameLab2.Views.LoginView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MemoryGameLab2.Views"
+        mc:Ignorable="d"
+        Title="Memory Game - Login" Height="450" Width="800">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Lista utilizatorilor -->
+        <GroupBox Grid.Row="0" Grid.Column="0" Grid.RowSpan="2" Header="Utilizatori existenti" Margin="0,0,10,0">
+            <DockPanel>
+                <ListBox ItemsSource="{Binding Users}" 
+                         SelectedItem="{Binding SelectedUser}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{Binding ImagePath}" Width="32" Height="32" Margin="0,0,5,0"/>
+                                <TextBlock Text="{Binding Username}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+        </GroupBox>
+
+        <!-- Creare utilizator nou -->
+        <GroupBox Grid.Row="0" Grid.Column="1" Header="Creare utilizator nou" Margin="10,0,0,0">
+            <StackPanel Margin="10">
+                <TextBox Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
+                         Margin="0,0,0,10">
+                    <TextBox.Style>
+                        <Style TargetType="TextBox">
+                            <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="TextBox">
+                                                <Border>
+                                                    <TextBlock Text="Nume utilizator" Foreground="Gray"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+                
+                <StackPanel Orientation="Horizontal" Margin="0,0,10,10">
+                    <TextBox Text="{Binding NewUserImagePath}" 
+                             IsReadOnly="True" 
+                             Margin="0,0,10,0"/>
+                    <Button Content="Selecteaza imagine" 
+                            Command="{Binding SelectImageCommand}"/>
+                </StackPanel>
+
+                <Button Content="Creeaza utilizator" 
+                        Command="{Binding CreateUserCommand}"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Butoane de acțiune -->
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right" 
+                    Margin="0,10,0,0">
+            <Button Content="Sterge utilizator" 
+                    Command="{Binding DeleteUserCommand}"
+                    IsEnabled="{Binding IsDeleteEnabled}"
+                    Margin="0,0,10,0"/>
+            <Button Content="Joaca" 
+                    Command="{Binding PlayCommand}"
+                    IsEnabled="{Binding IsPlayEnabled}"/>
+        </StackPanel>
+    </Grid>
+</Window> 

@@ -1,0 +1,10 @@
+﻿<Application x:Class="MemoryGameLab2.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:MemoryGameLab2"
+             xmlns:converters="clr-namespace:MemoryGameLab2.Converters"
+             StartupUri="Views/LoginView.xaml">
+    <Application.Resources>
+        <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+    </Application.Resources>
+</Application>
