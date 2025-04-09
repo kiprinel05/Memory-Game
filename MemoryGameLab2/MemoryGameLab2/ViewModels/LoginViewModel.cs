@@ -186,23 +186,33 @@ namespace MemoryGameLab2.ViewModels
 
         private void DeleteUser(object parameter)
         {
-            if (SelectedUser != null)
+            if (SelectedUser == null) return;
+
+            var result = MessageBox.Show($"Sigur doriți să ștergeți utilizatorul {SelectedUser.Username}?",
+                                      "Confirmare ștergere",
+                                      MessageBoxButton.YesNo,
+                                      MessageBoxImage.Warning);
+
+            if (result == MessageBoxResult.Yes)
             {
                 try
                 {
-                    // Ștergere imagine asociată
-                    if (File.Exists(SelectedUser.ImagePath))
-                    {
-                        File.Delete(SelectedUser.ImagePath);
-                    }
-                    
+                    // Ștergem doar din listă, fără a șterge fișierul imagine
                     Users.Remove(SelectedUser);
                     SaveUsers();
-                    MessageBox.Show("Utilizator șters cu succes!");
+                    SelectedUser = null; // Resetăm selecția
+
+                    MessageBox.Show("Utilizator șters cu succes din listă!",
+                                  "Succes",
+                                  MessageBoxButton.OK,
+                                  MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"Eroare la ștergerea utilizatorului: {ex.Message}");
+                    MessageBox.Show($"Eroare la ștergerea utilizatorului: {ex.Message}",
+                                  "Eroare",
+                                  MessageBoxButton.OK,
+                                  MessageBoxImage.Error);
                 }
             }
         }
