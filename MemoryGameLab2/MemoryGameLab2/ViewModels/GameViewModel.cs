@@ -119,6 +119,8 @@ namespace MemoryGameLab2.ViewModels
         public ICommand ModeSelectedCommand { get; private set; }
         public ICommand ShowAboutCommand { get; private set; }
 
+        public ICommand CustomGameCommand { get; private set; }
+
         private System.Timers.Timer _gameTimer;
         private readonly string _savesDirectory;
         private readonly string _statisticsFilePath;
@@ -169,6 +171,7 @@ namespace MemoryGameLab2.ViewModels
             CategorySelectedCommand = new RelayCommand(OnCategorySelected);
             ModeSelectedCommand = new RelayCommand(OnModeSelected);
             ShowAboutCommand = new RelayCommand(ShowAbout);
+            CustomGameCommand = new RelayCommand(StartCustomGame);
         }
 
         private void InitializeGame()
@@ -269,12 +272,14 @@ namespace MemoryGameLab2.ViewModels
             var rows = IsStandardMode ? 4 : CustomRows;
             var columns = IsStandardMode ? 4 : CustomColumns;
 
+            // Verificarea este acum făcută în fereastra custom, dar o păstrăm pentru redundanță
             if ((rows * columns) % 2 != 0)
             {
                 MessageBox.Show("Numărul total de cărți trebuie să fie par!");
                 return;
             }
 
+            // Restul logicii rămâne la fel...
             Settings = new GameSettings(rows, columns, 300, SelectedCategory);
             var category = _categories.FirstOrDefault(c => c.Name == SelectedCategory);
             if (category == null) return;
@@ -399,9 +404,16 @@ namespace MemoryGameLab2.ViewModels
             if (parameter is string mode)
             {
                 IsStandardMode = mode == "Standard";
+
+                // Dacă s-a selectat modul Standard, resetăm la 4x4
+                if (IsStandardMode)
+                {
+                    CustomRows = 4;
+                    CustomColumns = 4;
+                    StartNewGame(this); // Pornim automat un joc nou cu setările standard
+                }
             }
         }
-
         private void ShowAbout(object parameter)
         {
             var aboutWindow = new AboutWindow();
@@ -414,6 +426,18 @@ namespace MemoryGameLab2.ViewModels
             var loginWindow = new LoginView();
             loginWindow.Show();
             Application.Current.MainWindow.Close();
+        }
+
+        private void StartCustomGame(object parameter)
+        {
+            var customSettings = new CustomSettingsWindow();
+            if (customSettings.ShowDialog() == true)
+            {
+                CustomRows = customSettings.SelectedRows;
+                CustomColumns = customSettings.SelectedColumns;
+                IsStandardMode = false;
+                StartNewGame(this);
+            }
         }
     }
 

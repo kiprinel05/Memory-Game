@@ -24,28 +24,15 @@
                 <MenuItem Header="Exit" Command="{Binding ExitCommand}"/>
             </MenuItem>
             <MenuItem Header="Options">
-                <MenuItem Header="Standard" IsCheckable="True" IsChecked="{Binding IsStandardMode}"
-                          Command="{Binding ModeSelectedCommand}" CommandParameter="Standard"/>
-                <MenuItem Header="Custom" IsCheckable="True" IsChecked="{Binding IsStandardMode, Converter={StaticResource InverseBooleanConverter}}"
-                          Command="{Binding ModeSelectedCommand}" CommandParameter="Custom">
-                    <MenuItem.HeaderTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="Custom"/>
-                                <StackPanel Margin="10,0,0,0" Visibility="{Binding DataContext.IsStandardMode, RelativeSource={RelativeSource AncestorType=Window}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Rânduri:" Margin="0,0,5,0"/>
-                                        <TextBox Text="{Binding DataContext.CustomRows, RelativeSource={RelativeSource AncestorType=Window}}" Width="30"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="Coloane:" Margin="0,0,5,0"/>
-                                        <TextBox Text="{Binding DataContext.CustomColumns, RelativeSource={RelativeSource AncestorType=Window}}" Width="30"/>
-                                    </StackPanel>
-                                </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </MenuItem.HeaderTemplate>
-                </MenuItem>
+                <MenuItem Header="Standard Game (4x4)" 
+              IsCheckable="True" 
+              IsChecked="{Binding IsStandardMode}"
+              Command="{Binding ModeSelectedCommand}" 
+              CommandParameter="Standard"/>
+                <MenuItem Header="Custom Game..." 
+              IsCheckable="True"
+              IsChecked="{Binding IsStandardMode, Converter={StaticResource InverseBooleanConverter}}"
+              Command="{Binding CustomGameCommand}"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="About" Command="{Binding ShowAboutCommand}"/>
