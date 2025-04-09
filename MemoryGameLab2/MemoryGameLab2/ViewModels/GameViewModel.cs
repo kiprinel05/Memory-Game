@@ -193,26 +193,36 @@ namespace MemoryGameLab2.ViewModels
 
         private void OnCardClick(object parameter)
         {
-            if (!IsGameActive || parameter is not GameCard card || card.IsMatched || card.IsFlipped)
+            if (!IsGameActive || parameter is not GameCard card || card.IsMatched)
                 return;
+
+            // Dacă cartea este deja întoarsă, ignorăm click-ul
+            if (card.IsFlipped)
+                return;
+
+            // Întoarcem cartea
+            card.IsFlipped = true;
 
             if (_firstSelectedCard == null)
             {
                 _firstSelectedCard = card;
-                card.IsFlipped = true;
             }
             else if (_secondSelectedCard == null)
             {
                 _secondSelectedCard = card;
-                card.IsFlipped = true;
 
+                // Verificăm dacă cele două cărți se potrivesc
                 if (_firstSelectedCard.ImagePath == _secondSelectedCard.ImagePath)
                 {
+                    // Cărțile se potrivesc - le marcăm ca fiind potrivite
                     _firstSelectedCard.IsMatched = true;
                     _secondSelectedCard.IsMatched = true;
+
+                    // Resetăm selecțiile
                     _firstSelectedCard = null;
                     _secondSelectedCard = null;
 
+                    // Verificăm dacă jocul s-a terminat
                     if (Cards.All(c => c.IsMatched))
                     {
                         _gameTimer.Stop();
@@ -223,13 +233,33 @@ namespace MemoryGameLab2.ViewModels
                 }
                 else
                 {
+                    // Cărțile nu se potrivesc - le vom întoarce la loc după o scurtă pauză
                     IsGameActive = false;
-                    System.Threading.Thread.Sleep(1000);
-                    _firstSelectedCard.IsFlipped = false;
-                    _secondSelectedCard.IsFlipped = false;
-                    _firstSelectedCard = null;
-                    _secondSelectedCard = null;
-                    IsGameActive = true;
+
+                    // Utilizăm un timer pentru a întârzia întoarcerea cărților
+                    var timer = new System.Windows.Threading.DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromSeconds(1)
+                    };
+
+                    timer.Tick += (s, e) =>
+                    {
+                        // Întoarcem cărțile la loc
+                        _firstSelectedCard.IsFlipped = false;
+                        _secondSelectedCard.IsFlipped = false;
+
+                        // Resetăm selecțiile
+                        _firstSelectedCard = null;
+                        _secondSelectedCard = null;
+
+                        // Reactivăm jocul
+                        IsGameActive = true;
+
+                        // Oprim timerul
+                        timer.Stop();
+                    };
+
+                    timer.Start();
                 }
             }
         }
@@ -393,4 +423,5 @@ namespace MemoryGameLab2.ViewModels
         public int GamesWon { get; set; }
         public double WinRate => GamesPlayed > 0 ? (double)GamesWon / GamesPlayed : 0;
     }
+
 } 

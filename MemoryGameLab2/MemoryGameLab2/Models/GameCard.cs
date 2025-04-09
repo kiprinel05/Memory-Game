@@ -1,14 +1,71 @@
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace MemoryGameLab2.Models
 {
-    public class GameCard
+    public class GameCard : INotifyPropertyChanged
     {
-        public int Id { get; set; }
-        public string ImagePath { get; set; }
-        public bool IsFlipped { get; set; }
-        public bool IsMatched { get; set; }
-        public BitmapImage Image { get; set; }
+        private int _id;
+        private string _imagePath;
+        private bool _isFlipped;
+        private bool _isMatched;
+        private BitmapImage _displayImage;
+        private static readonly BitmapImage _backImage = new BitmapImage(new Uri("/Images/CardBack.png", UriKind.Relative));
+
+        public int Id
+        {
+            get => _id;
+            set
+            {
+                _id = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ImagePath
+        {
+            get => _imagePath;
+            set
+            {
+                _imagePath = value;
+                OnPropertyChanged();
+                UpdateDisplayImage();
+            }
+        }
+
+        public bool IsFlipped
+        {
+            get => _isFlipped;
+            set
+            {
+                _isFlipped = value;
+                OnPropertyChanged();
+                UpdateDisplayImage();
+            }
+        }
+
+        public bool IsMatched
+        {
+            get => _isMatched;
+            set
+            {
+                _isMatched = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public BitmapImage DisplayImage
+        {
+            get => _displayImage;
+            private set
+            {
+                _displayImage = value;
+                OnPropertyChanged();
+            }
+        }
 
         public GameCard(int id, string imagePath)
         {
@@ -16,7 +73,28 @@ namespace MemoryGameLab2.Models
             ImagePath = imagePath;
             IsFlipped = false;
             IsMatched = false;
-            Image = new BitmapImage(new System.Uri(imagePath));
+            UpdateDisplayImage();
+        }
+
+        private void UpdateDisplayImage()
+        {
+            if (IsFlipped)
+            {
+                // Afișează imaginea cărții când este întoarsă
+                DisplayImage = new BitmapImage(new Uri(ImagePath, UriKind.Absolute));
+            }
+            else
+            {
+                // Afișează spatele cărții când nu este întoarsă
+                DisplayImage = null; // Butonul va rămâne albastru (Background="Blue")
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
-} 
+}

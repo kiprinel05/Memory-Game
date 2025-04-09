@@ -74,24 +74,13 @@
                     <DataTemplate>
                         <Button Command="{Binding DataContext.CardClickCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                 CommandParameter="{Binding}"
-                                Width="100" Height="100" Margin="5">
-                            <Button.Style>
-                                <Style TargetType="Button">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsFlipped}" Value="False">
-                                            <Setter Property="Background" Value="Blue"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding IsMatched}" Value="True">
-                                            <Setter Property="Visibility" Value="Hidden"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <Image Source="{Binding Image}" Stretch="Uniform"/>
+                                Width="100" Height="100" Margin="5"
+                                Background="Gray">
+                            <Image Source="{Binding DisplayImage}" Stretch="Uniform"/>
                         </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
     </DockPanel>
-</Window> 
+</Window>
